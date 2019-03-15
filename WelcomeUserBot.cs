@@ -160,11 +160,11 @@ namespace Microsoft.BotBuilderSamples
             var response = turnContext.Activity.CreateReply();
 
             var card = new HeroCard();
+
+            var req = HttpGetter.GetterAsync();
+
             card.Title = "Welcome to Bot Framework!";
-            card.Text = @"Welcome to Welcome Users bot sample! This Introduction card
-                         is a great way to introduce your Bot to the user and suggest
-                         some things to get them started. We use this opportunity to
-                         recommend a few next steps for learning more creating and deploying bots.";
+            card.Text = req;
             card.Images = new List<CardImage>() { new CardImage("https://aka.ms/bf-welcome-card-image") };
             card.Buttons = new List<CardAction>()
             {
