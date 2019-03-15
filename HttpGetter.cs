@@ -12,7 +12,7 @@ namespace Microsoft.BotBuilderSamples
 {
     public static class HttpGetter
     {
-        public static string GetterAsync()
+        public static string GetterAsync(string word)
         {
             var client = new HttpClient();
 
@@ -26,7 +26,7 @@ namespace Microsoft.BotBuilderSamples
             client.DefaultRequestHeaders.Add("app_key", "f5ea0a4c2eb52716e478cfd53f04e97d");
             client.BaseAddress = new Uri("https://od-api.oxforddictionaries.com:443/api/v1/entries/en/");
 
-            Task<HttpResponseMessage> responseTask = client.GetAsync("house");
+            Task<HttpResponseMessage> responseTask = client.GetAsync(word);
             responseTask.Wait();
             HttpResponseMessage response = responseTask.Result;
             if (response.IsSuccessStatusCode)

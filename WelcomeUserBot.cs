@@ -88,27 +88,28 @@ namespace Microsoft.BotBuilderSamples
                     // the channel should sends the user name in the 'From' object
                     var userName = turnContext.Activity.From.Name;
 
-                    await turnContext.SendActivityAsync($"You are seeing this message because this was your first message ever to this bot.", cancellationToken: cancellationToken);
-                    await turnContext.SendActivityAsync($"It is a good practice to welcome the user and provide personal greeting. For example, welcome {userName}.", cancellationToken: cancellationToken);
+                    await turnContext.SendActivityAsync($"Ask me anything you want.", cancellationToken: cancellationToken);
+                    //await turnContext.SendActivityAsync($"It is a good practice to welcome the user and provide personal greeting. For example, welcome {userName}.", cancellationToken: cancellationToken);
                 }
                 else
                 {
                     // This example hardcodes specific utterances. You should use LUIS or QnA for more advance language understanding.
                     var text = turnContext.Activity.Text.ToLowerInvariant();
-                    switch (text)
-                    {
-                        case "hello":
-                        case "hi":
-                            await turnContext.SendActivityAsync($"You said {text}.", cancellationToken: cancellationToken);
-                            break;
-                        case "intro":
-                        case "help":
-                            await SendIntroCardAsync(turnContext, cancellationToken);
-                            break;
-                        default:
-                            await turnContext.SendActivityAsync(WelcomeMessage, cancellationToken: cancellationToken);
-                            break;
-                    }
+                    await SendIntroCardAsync(turnContext, cancellationToken);
+                    //switch (text)
+                    //{
+                    //    case "hello":
+                    //    case "hi":
+                    //        await turnContext.SendActivityAsync($"You said {text}.", cancellationToken: cancellationToken);
+                    //        break;
+                    //    case "intro":
+                    //    case "help":
+                    //        await SendIntroCardAsync(turnContext, cancellationToken);
+                    //        break;
+                    //    default:
+                    //        await turnContext.SendActivityAsync(WelcomeMessage, cancellationToken: cancellationToken);
+                    //        break;
+                    //}
                 }
             }
 
@@ -130,9 +131,9 @@ namespace Microsoft.BotBuilderSamples
                         // bot was added to the conversation.
                         if (member.Id != turnContext.Activity.Recipient.Id)
                         {
-                            await turnContext.SendActivityAsync($"Hi there - {member.Name}. {WelcomeMessage}", cancellationToken: cancellationToken);
-                            await turnContext.SendActivityAsync(InfoMessage, cancellationToken: cancellationToken);
-                            await turnContext.SendActivityAsync(PatternMessage, cancellationToken: cancellationToken);
+                            //await turnContext.SendActivityAsync($"Hi there - {member.Name}. {WelcomeMessage}", cancellationToken: cancellationToken);
+                            //await turnContext.SendActivityAsync(InfoMessage, cancellationToken: cancellationToken);
+                            //await turnContext.SendActivityAsync(PatternMessage, cancellationToken: cancellationToken);
                         }
                     }
                 }
@@ -161,17 +162,17 @@ namespace Microsoft.BotBuilderSamples
 
             var card = new HeroCard();
 
-            var req = HttpGetter.GetterAsync();
+            var req = HttpGetter.GetterAsync(turnContext.Activity.Text.ToLowerInvariant());
 
-            card.Title = "Welcome to Bot Framework!";
+            card.Title = "Definition of " + turnContext.Activity.Text.ToLowerInvariant();
             card.Text = req;
-            card.Images = new List<CardImage>() { new CardImage("https://aka.ms/bf-welcome-card-image") };
-            card.Buttons = new List<CardAction>()
-            {
-                new CardAction(ActionTypes.OpenUrl, "Get an overview", null, "Get an overview", "Get an overview", "https://docs.microsoft.com/en-us/azure/bot-service/?view=azure-bot-service-4.0"),
-                new CardAction(ActionTypes.OpenUrl, "Ask a question", null, "Ask a question", "Ask a question", "https://stackoverflow.com/questions/tagged/botframework"),
-                new CardAction(ActionTypes.OpenUrl, "Learn how to deploy", null, "Learn how to deploy", "Learn how to deploy", "https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-deploy-azure?view=azure-bot-service-4.0"),
-            };
+            //card.Images = new List<CardImage>() { new CardImage("https://aka.ms/bf-welcome-card-image") };
+            //card.Buttons = new List<CardAction>()
+            //{
+            //    new CardAction(ActionTypes.OpenUrl, "Get an overview", null, "Get an overview", "Get an overview", "https://docs.microsoft.com/en-us/azure/bot-service/?view=azure-bot-service-4.0"),
+            //    new CardAction(ActionTypes.OpenUrl, "Ask a question", null, "Ask a question", "Ask a question", "https://stackoverflow.com/questions/tagged/botframework"),
+            //    new CardAction(ActionTypes.OpenUrl, "Learn how to deploy", null, "Learn how to deploy", "Learn how to deploy", "https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-deploy-azure?view=azure-bot-service-4.0"),
+            //};
 
             response.Attachments = new List<Attachment>() { card.ToAttachment() };
             await turnContext.SendActivityAsync(response, cancellationToken);
