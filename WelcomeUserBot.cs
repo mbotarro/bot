@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -20,6 +21,7 @@ namespace Microsoft.BotBuilderSamples
     /// For example, the <see cref="MemoryStorage"/> object and associated
     /// <see cref="IStatePropertyAccessor{T}"/> object are created with a singleton lifetime.
     /// </summary>
+ 
     public class WelcomeUserBot : IBot
     {
         // Messages sent to the user.
@@ -43,6 +45,10 @@ namespace Microsoft.BotBuilderSamples
 
         // The bot state accessor object. Use this to access specific state properties.
         private readonly WelcomeUserStateAccessors _welcomeUserStateAccessors;
+
+        public static int turn = 0;
+
+        public object Random { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WelcomeUserBot"/> class.
@@ -96,6 +102,45 @@ namespace Microsoft.BotBuilderSamples
                     // This example hardcodes specific utterances. You should use LUIS or QnA for more advance language understanding.
                     var text = turnContext.Activity.Text.ToLowerInvariant();
                     await SendIntroCardAsync(turnContext, cancellationToken);
+
+                    turn++;
+
+
+                    Random rnd = new Random();
+                    int r = rnd.Next(1, 10); // creates a number between 1 and 12
+
+                    string[] words = { "house", "car", "tree" };
+                    var syn = new string[][] { new string[]{"brick","building","software"},
+                                                    new string[]{"vehicle","dog","space"},
+                                                    new string[]{"plant","ocean","game"} };
+
+
+                    if (turn > 0 && turn%2 == 0) {
+                        
+                        var response = turnContext.Activity.CreateReply();
+
+                        var card = new HeroCard();
+
+                        var req = HttpGetter.GetterAsync(turnContext.Activity.Text.ToLowerInvariant());
+                        int i = ((turn / 2) - 1)%3;
+                        card.Title = "Try this one. Which is a synonym of " + words[i];
+                        //card.Text = "okok";
+
+                        card.Buttons = new List<CardAction>()
+                        {
+                            new CardAction(ActionTypes.OpenUrl, syn[i][0], null, "Get an overview", "Get an overview", "https://docs.microsoft.com/en-us/azure/bot-service/?view=azure-bot-service-4.0"),
+                            new CardAction(ActionTypes.OpenUrl, syn[i][1], null, "Ask a question", "Ask a question", "https://stackoverflow.com/questions/tagged/botframework"),
+                            new CardAction(ActionTypes.OpenUrl, syn[i][2], null, "Learn how to deploy", "Learn how to deploy", "https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-deploy-azure?view=azure-bot-service-4.0"),
+                        };
+
+                        response.Attachments = new List<Attachment>() { card.ToAttachment() };
+                        await turnContext.SendActivityAsync(response, cancellationToken);
+                    }
+                
+
+                    
+
+
                     //switch (text)
                     //{
                     //    case "hello":
