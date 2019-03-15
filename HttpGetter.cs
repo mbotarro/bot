@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 
 using System.Net.Http;
 using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Microsoft.BotBuilderSamples
 {
@@ -31,8 +33,9 @@ namespace Microsoft.BotBuilderSamples
             {
                 Task<string> t = response.Content.ReadAsStringAsync();
                 t.Wait();
-
-                return t.Result;
+                JObject jObject = JObject.Parse(t.Result);
+                //return (string)jObject["results"];
+                return (string)jObject["results"][0]["lexicalEntries"][0]["entries"][0]["senses"][0]["definitions"][0];
             }
 
             return "nothing";
